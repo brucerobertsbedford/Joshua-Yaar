@@ -16,7 +16,8 @@ public class API {
 	private static String ACCESS_TOKEN_NAME = "access_token";
 	
 	public static void main(String[] args) {
-		sendPost(TOKEN_URL, CLIENT_ID, CLIENT_SECRET);
+		String accessToken = sendPost(TOKEN_URL, CLIENT_ID, CLIENT_SECRET);
+		System.out.println("\n\naccess token:  '" + accessToken + "'");
 
 	}
 
@@ -43,10 +44,9 @@ public class API {
 					response.append(inputLine);
 				}
 				in.close();
-				System.out.println(response);
+				System.out.println("Post response:  " + response);
 				
 				String accessToken = getJsonMember(ACCESS_TOKEN_NAME, response.toString());		
-				System.out.println("accessToken:  " + accessToken);
 				return accessToken;
 			} else {
 				System.out.println("Post returned HTTP error code:  " + responseCode);
