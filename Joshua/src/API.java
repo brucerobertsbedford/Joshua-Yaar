@@ -10,8 +10,9 @@ import java.util.regex.Pattern;
 
 public class API {
 
-	private static String CLIENT_ID = "bebcef28ebfd41549408ad18eb638059";
-	private static String CLIENT_SECRET = "63834c8901ed4008886a25691e790bc7";
+
+	private static String CLIENT_ID = "<your client id>";
+	private static String CLIENT_SECRET = "<your client secret>";
 	private static String TOKEN_URL = "https://accounts.spotify.com/api/token";
 	private static String ACCESS_TOKEN_NAME = "access_token";
 	
