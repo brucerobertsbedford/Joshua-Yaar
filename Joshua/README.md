@@ -1,4 +1,4 @@
-<!-- Test --> Source code shared with Joshua
+Source code shared with Joshua
 
 <H1>Setup</H1>
 
