@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class API {
 
-	private static boolean debugOn = false;
+	private static boolean debugOn = true;
 	private static String CLIENT_ID = "<your client id>";
 	private static String CLIENT_SECRET = "<your client secret>";
 	private static String TOKEN_URL = "https://accounts.spotify.com/api/token";
