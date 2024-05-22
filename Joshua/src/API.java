@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,12 +24,48 @@ public class API {
 //		String accessToken = sendPost(TOKEN_URL, CLIENT_ID, CLIENT_SECRET);
 	//	System.out.println("\n\naccess token:  '" + accessToken + "'");
 		String artistId = getArtistId("Miles Davis");
-		getArtist(artistId);
+//		getArtist(artistId);
 
 	}
 	
 	private static String getArtistId(String artistName) {
-		return "0TnOYISbd1XYRBk9myaseg";
+		String url = API_URL + "search?q=" + URLEncoder.encode(artistName) + "&type=artist";
+		try {
+			URL obj = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setRequestProperty("Authorization",  "Bearer " + accessToken);
+			con.setRequestProperty("Content-Type","application/json");
+			con.setRequestMethod("GET");
+			
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+	        String output;
+
+	        StringBuffer response = new StringBuffer();
+	        while ((output = in.readLine()) != null) {
+	            response.append(output);
+	        }
+
+	        in.close();
+	        // printing result from response
+	        System.out.println("Response:-" + response.toString());
+			int responseCode = con.getResponseCode();
+			
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				System.out.println("Get response:  " + response);
+				
+			} else {
+				return "";
+			}
+			
+		} catch (MalformedURLException e) {
+			System.out.println("Malforemed url:  " + url);
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("Error opening connection to url:  " + url);
+			e.printStackTrace();
+		}
+		return "";
+//		return "0TnOYISbd1XYRBk9myaseg";
 	}
 	
 	private static String getArtist(String artistId) {
