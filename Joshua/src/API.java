@@ -6,25 +6,28 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class API {
 
-
-	private static String CLIENT_ID = "bebcef28ebfd41549408ad18eb638059";
-	private static String CLIENT_SECRET = "63834c8901ed4008886a25691e790bc7";
+	private static boolean debugOn = false;
+	private static String CLIENT_ID = "<your client id>";
+	private static String CLIENT_SECRET = "<your client secret>";
 	private static String TOKEN_URL = "https://accounts.spotify.com/api/token";
 	private static String API_URL = "https://api.spotify.com/v1/";
 	private static String ACCESS_TOKEN_NAME = "access_token";
-	private static String accessToken = "BQB0zqosPXGFe9zXkzdLBlMCb5-PAWTwXcs-AVC4MEm3rlON4FnLCzgPiZPrQJxpiZQUkk1uEO4jOQQrkQYu0dmqPWG8QSBAhmMFEToUk7Qs4fHAF4Q";
+	private static String accessToken = "BQCo7yI4mqvQsNggfJvn8h3YUx_BpFmKGWqlRKAJ1g7IVj0h608BhqvOWC0m9pxJinY3pBGeYbVRXyf99DM9IF3J5hAzPWyfuogs1-DqEnPLK5TEX7s";
 	
 	public static void main(String[] args) {
-//		String accessToken = sendPost(TOKEN_URL, CLIENT_ID, CLIENT_SECRET);
-	//	System.out.println("\n\naccess token:  '" + accessToken + "'");
-		String artistId = getArtistId("Miles Davis");
-//		getArtist(artistId);
+		String artistName = "Miles Davis";
+		String accessToken = getAccessToken(TOKEN_URL, CLIENT_ID, CLIENT_SECRET);
+		System.out.println("\n\naccess token:  '" + accessToken + "'");
+		String artistId = getArtistId(artistName);
+		System.out.println("\n\n" + artistName + " id:  " + artistId);
+		String artistJson = getArtistJson(artistId);
+		System.out.println("\n\nArtist json for " + artistName + "\n");
+		System.out.println(artistJson);
 
 	}
 	
@@ -47,14 +50,11 @@ public class API {
 
 	        in.close();
 	        // printing result from response
-	        System.out.println("Response:-" + response.toString());
+	        printDebug(response.toString());
 			int responseCode = con.getResponseCode();
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				System.out.println("Get response:  " + response);
-				
-			} else {
-				return "";
+				return getJsonArtistId(response.toString());	
 			}
 			
 		} catch (MalformedURLException e) {
@@ -65,10 +65,9 @@ public class API {
 			e.printStackTrace();
 		}
 		return "";
-//		return "0TnOYISbd1XYRBk9myaseg";
 	}
 	
-	private static String getArtist(String artistId) {
+	private static String getArtistJson(String artistId) {
 		String url = API_URL + "artists/" + artistId;
 		try {
 			URL obj = new URL(url);
@@ -87,11 +86,12 @@ public class API {
 
 	        in.close();
 	        // printing result from response
-	        System.out.println("Response:-" + response.toString());
+	        printDebug("Response:-" + response.toString());
 			int responseCode = con.getResponseCode();
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				System.out.println("Get response:  " + response);
+				printDebug("Get response:  " + response);
+				return response.toString();
 				
 			} else {
 				return "";
@@ -108,7 +108,7 @@ public class API {
 		
 	}
 
-	private static String sendPost(String url, String client_id, String client_secret) {
+	private static String getAccessToken(String url, String client_id, String client_secret) {
 		try {
 			String params = "grant_type=client_credentials&client_id=" + client_id + "&client_secret=" + client_secret;
 			URL obj = new URL(url);
@@ -131,12 +131,12 @@ public class API {
 					response.append(inputLine);
 				}
 				in.close();
-				System.out.println("Post response:  " + response);
+				printDebug("Post response:  " + response);
 				
 				String accessToken = getJsonMember(ACCESS_TOKEN_NAME, response.toString());		
 				return accessToken;
 			} else {
-				System.out.println("Post returned HTTP error code:  " + responseCode);
+				printDebug("Post returned HTTP error code:  " + responseCode);
 				return "";
 			}
 			
@@ -151,6 +151,17 @@ public class API {
 		
 	}
 	
+	private static String getJsonArtistId(String json) {
+		String result = "";
+		String regex = "\".*?\"" + "id" + "\"\\s*:\\s*\"(.+?)\"";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(json);
+		if (matcher.find()) {
+			result = matcher.group(1);
+		}
+		return result;
+	}
+	
 	private static String getJsonMember(String memberName, String json) {
 		String result = "";
 		String regex = "[.]*\"" + memberName + "\":\"(.+?)\"";
@@ -160,6 +171,12 @@ public class API {
 			result = matcher.group(1);
 		}
 		return result;
+	}
+	
+	static void printDebug(String s) {
+		if (debugOn) {
+			System.out.println(s);
+		}
 	}
 
 }
