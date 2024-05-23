@@ -12,16 +12,16 @@ import java.util.regex.Pattern;
 public class API {
 
 	private static boolean debugOn = true;
-	private static String CLIENT_ID = "<your client id>";
-	private static String CLIENT_SECRET = "<your client secret>";
+	private static String CLIENT_ID = "<your client-id>";
+	private static String CLIENT_SECRET = "<your client-secret>";
 	private static String TOKEN_URL = "https://accounts.spotify.com/api/token";
 	private static String API_URL = "https://api.spotify.com/v1/";
 	private static String ACCESS_TOKEN_NAME = "access_token";
-	private static String accessToken = "BQCo7yI4mqvQsNggfJvn8h3YUx_BpFmKGWqlRKAJ1g7IVj0h608BhqvOWC0m9pxJinY3pBGeYbVRXyf99DM9IF3J5hAzPWyfuogs1-DqEnPLK5TEX7s";
+	private static String accessToken = "";
 	
 	public static void main(String[] args) {
 		String artistName = "Miles Davis";
-		String accessToken = getAccessToken(TOKEN_URL, CLIENT_ID, CLIENT_SECRET);
+		accessToken = getAccessToken(TOKEN_URL, CLIENT_ID, CLIENT_SECRET);
 		System.out.println("\n\naccess token:  '" + accessToken + "'");
 		String artistId = getArtistId(artistName);
 		System.out.println("\n\n" + artistName + " id:  " + artistId);
@@ -52,13 +52,14 @@ public class API {
 	        // printing result from response
 	        printDebug(response.toString());
 			int responseCode = con.getResponseCode();
+			con.disconnect();
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
 				return getJsonArtistId(response.toString());	
 			}
 			
 		} catch (MalformedURLException e) {
-			System.out.println("Malforemed url:  " + url);
+			System.out.println("Malformed url:  " + url);
 			e.printStackTrace();
 		} catch (IOException e) {
 			System.out.println("Error opening connection to url:  " + url);
@@ -91,6 +92,7 @@ public class API {
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
 				printDebug("Get response:  " + response);
+				con.disconnect();
 				return response.toString();
 				
 			} else {
@@ -131,6 +133,7 @@ public class API {
 					response.append(inputLine);
 				}
 				in.close();
+				con.disconnect();
 				printDebug("Post response:  " + response);
 				
 				String accessToken = getJsonMember(ACCESS_TOKEN_NAME, response.toString());		
