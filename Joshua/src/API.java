@@ -12,12 +12,12 @@ import java.util.regex.Pattern;
 public class API {
 
 	private static boolean debugOn = true;
-	private static String CLIENT_ID = "<your client-id>";
-	private static String CLIENT_SECRET = "<your client-secret>";
+	private static String CLIENT_ID = "bebcef28ebfd41549408ad18eb638059";
+	private static String CLIENT_SECRET = "63834c8901ed4008886a25691e790bc7";
 	private static String TOKEN_URL = "https://accounts.spotify.com/api/token";
 	private static String API_URL = "https://api.spotify.com/v1/";
 	private static String ACCESS_TOKEN_NAME = "access_token";
-	private static String accessToken = "";
+	private static String accessToken = "BQBW15JeX8BRUczIwMApUQBqBLVAwluUAT_jdZIwnAhv_i8hMcgmTLtQ7KNwvnnADxC_nTGAvuThM4khO3aAk4G7-BV712-0lyXy4GlgLWhIBjeIIfo";
 	
 	public static void main(String[] args) {
 		String artistName = "Miles Davis";
@@ -55,7 +55,7 @@ public class API {
 			con.disconnect();
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				return getJsonArtistId(response.toString());	
+				return getJsonMember("id", response.toString());	
 			}
 			
 		} catch (MalformedURLException e) {
@@ -154,20 +154,9 @@ public class API {
 		
 	}
 	
-	private static String getJsonArtistId(String json) {
-		String result = "";
-		String regex = "\".*?\"" + "id" + "\"\\s*:\\s*\"(.+?)\"";
-		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher = pattern.matcher(json);
-		if (matcher.find()) {
-			result = matcher.group(1);
-		}
-		return result;
-	}
-	
 	private static String getJsonMember(String memberName, String json) {
 		String result = "";
-		String regex = "[.]*\"" + memberName + "\":\"(.+?)\"";
+		String regex = "[.]*\"" + memberName + "\"\s*:\s*\"(.+?)\"";
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(json);
 		if (matcher.find()) {
